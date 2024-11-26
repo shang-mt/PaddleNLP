@@ -36,13 +36,14 @@ cd ../model_zoo/gpt-3/external_ops/ &&  ${python} setup.py install && cd -
 
 export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4
 export MCCL_PROTOS=2
+export FLAGS_embedding_deterministic=1
 
 master_ip=$1
 local_ip=`ifconfig eth0 | grep 'inet ' | awk '{print $2}'`
 
 PYTHONPATH=../ ${python} -m paddle.distributed.launch \
 	--master "${master_ip}:8678" \
-	--nnodes 8 \
+	--nnodes 16 \
 	--log_dir "/home/dist/baidu_test/log/${local_ip}" \
         --gpus 0,1,2,3,4,5,6,7 \
 	run_pretrain.py \
